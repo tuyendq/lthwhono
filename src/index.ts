@@ -23,6 +23,10 @@ app.get('/', serveStatic({ path: './index.html'}))
 // app.get('/favicon.ico', serveStatic({ path: './favicon.ico'}))
 app.get('/favicon.ico', serveStatic({ path: './favicon.ico'}))
 
+app.get('/hello', (c) => {
+  return c.text('Hello Hono!')
+})
+
 app.get('/api/blogs', (c) => c.json(blogs))
 app.get('/api/blogs/:id', (c) => {
   const { id } = c.req.param()
@@ -31,7 +35,7 @@ app.get('/api/blogs/:id', (c) => {
 })
 
 app.post('/api/blogs', async (c) => {
-  const body = await c.req.parseBody() as BLOG;
+  const body = await c.req.parseBody() as unknown as BLOG;
   if (!body) return c.json({ status: 401, message: "The request payload is required."})
   const newBlog = {
     id: blogs.length + 1,
@@ -42,10 +46,5 @@ blogs.push(newBlog)
 return c.json({ data: newBlog})
 })
 
-
-
-// app.get('/', (c) => {
-//   return c.text('Hello Hono!')
-// })
 
 export default app
